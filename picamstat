@@ -1,0 +1,45 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          picamstat
+# Required-Start:
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: executed by init(8) upon entering runlevel 1 (single).
+### END INIT INFO
+
+
+. /lib/lsb/init-functions
+
+do_start () {
+    #/usr/bin/python /home/pi/read_geiger.py &
+    /home/pi/picam/picamstat.sh &
+}
+
+case "$1" in
+  start)
+    do_start
+    ;;
+  restart|reload|force-reload)
+    echo "Error: argument '$1' not supported" >&2
+    exit 3
+    ;;
+  stop)
+    echo "Stoping picamstat"
+    kill `pgrep picamstat.sh`
+    ;;
+
+  ifNotPresent)
+    if [ $(/usr/bin/pgrep picamstat.sh) ]; then
+      echo "picamstat.sh is running"
+     else
+      echo "starting picamstat on ifNotPresent"
+      #/home/pi/picam/picamstat.sh &
+    fi
+    ;;
+
+  *)
+    echo "Usage: $0 ifNotPresent|start|stop" >&2
+    exit 3
+    ;;
+esac

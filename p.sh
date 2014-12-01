@@ -3,13 +3,10 @@
 #exit
 jpg="jpg"
 
-while true; do
- 
+do_action () {
  filename=$(date -u +"%d%m%Y_%H%M")
  #echo Current filename:"$filename"
  #echo "-----------------------------------"
- 
-
  for D in `find /home/pi/picam/jpg -type l 2>/dev/null`
  do
      sz=$(ls -tr -1 $D/*.jpg 2>/dev/null| wc -l)
@@ -29,6 +26,18 @@ while true; do
 	echo deleted $bsn
      fi
  done
- echo "Sleep..."
- sleep 3s
+}
+
+while true; do
+
+    picam=$(cat /home/pi/picam/pistat)
+    if [ "$picam" == "wait" ]; then
+     echo "...........WAIT.............."
+     sleep 1m
+    else
+     do_action;
+    fi 
+    echo "Sleep"
+    sleep 3s
+
 done
